@@ -1,0 +1,26 @@
+# mypy configuration
+[tool.mypy]
+# help finding errors
+show_error_codes = true
+show_error_context = true
+# warn about config that doesn't hit files
+warn_unused_configs = true
+# exclude protobuf directory
+exclude = "pb2/.*"
+# stubs
+warn_incomplete_stub = true
+
+# mypy --strict config:
+disallow_any_generics = true
+disallow_subclassing_any = true
+# disallow_untyped_calls = true  # turn off for tests/
+# disallow_untyped_defs = true  # turn off for tests/
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+implicit_reexport = false
+strict_equality = true
