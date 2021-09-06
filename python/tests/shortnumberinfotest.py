@@ -24,6 +24,7 @@ from phonenumbers import is_possible_short_number_for_region, is_possible_short_
 from phonenumbers import is_valid_short_number_for_region, is_valid_short_number
 from phonenumbers import expected_cost, expected_cost_for_region, PhoneMetadata
 from phonenumbers import shortnumberinfo, ShortNumberCost, PhoneNumber, NumberParseException
+from phonenumbers import phonenumberutil
 from phonenumbers.util import u
 from .testmetadatatest import TestMetadataTestCase
 
@@ -178,7 +179,7 @@ class ShortNumberInfoTest(TestMetadataTestCase):
         self.assertFalse(len(shortnumberinfo._example_short_number("AD")) == 0)
         self.assertFalse(len(shortnumberinfo._example_short_number("FR")) == 0)
         self.assertTrue(len(shortnumberinfo._example_short_number("001")) == 0)
-        self.assertTrue(len(shortnumberinfo._example_short_number(None)) == 0)
+        self.assertTrue(len(shortnumberinfo._example_short_number(None)) == 0)  # type: ignore[arg-type]  # testing type edge cases
 
     def testConnectsToEmergencyNumber_US(self):
         self.assertTrue(connects_to_emergency_number("911", "US"))
@@ -322,4 +323,4 @@ class ShortNumberInfoTest(TestMetadataTestCase):
 
     def testMetadataAbsent(self):
         # Python version extra test: check internal fn. copes with missing PhoneNumberDesc
-        self.assertFalse(shortnumberinfo._match_national_number("123456", None, False))
+        self.assertFalse(phonenumberutil._match_national_number("123456", None, False))

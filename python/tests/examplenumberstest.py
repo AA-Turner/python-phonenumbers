@@ -147,6 +147,7 @@ class ExampleNumbersTest(unittest.TestCase):
             exampleNumber = phonenumberutil.example_number_for_non_geo_entity(callingCode)
             self.assertTrue(exampleNumber is not None,
                             msg="No example phone number for calling code %s" % callingCode)
+            assert exampleNumber is not None  # for the type checker
             if not phonenumberutil.is_valid_number(exampleNumber):
                 self.invalid_cases.append(exampleNumber)
                 prnt("Failed validation for %s" % exampleNumber, file=sys.stderr)
@@ -202,6 +203,7 @@ class ExampleNumbersTest(unittest.TestCase):
         wrongTypeCounter = 0
         for regionCode in shortnumberinfo.SUPPORTED_SHORT_REGIONS:
             metadata = PhoneMetadata.short_metadata_for_region(regionCode, None)
+            assert metadata is not None  # for the type checker
             desc = metadata.emergency
             if desc is not None and desc.example_number is not None:
                 exampleNumber = desc.example_number
@@ -219,6 +221,7 @@ class ExampleNumbersTest(unittest.TestCase):
         wrongTagCounter = 0
         for regionCode in shortnumberinfo.SUPPORTED_SHORT_REGIONS:
             metadata = PhoneMetadata.short_metadata_for_region(regionCode, None)
+            assert metadata is not None  # for the type checker
             desc = metadata.carrier_specific
             if desc is not None and desc.example_number is not None:
                 exampleNumber = desc.example_number
@@ -233,6 +236,7 @@ class ExampleNumbersTest(unittest.TestCase):
         wrongTagCounter = 0
         for regionCode in shortnumberinfo.SUPPORTED_SHORT_REGIONS:
             metadata = PhoneMetadata.short_metadata_for_region(regionCode, None)
+            assert metadata is not None  # for the type checker
             desc = metadata.sms_services
             if desc is not None and desc.example_number is not None:
                 exampleNumber = desc.example_number

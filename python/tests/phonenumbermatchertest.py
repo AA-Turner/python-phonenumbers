@@ -69,19 +69,19 @@ class PhoneNumberMatchTest(unittest.TestCase):
             pass
 
         try:
-            PhoneNumberMatch(10, "1 800 234 45 67", None)
+            PhoneNumberMatch(10, "1 800 234 45 67", None)  # type: ignore[arg-type]  # testing type errors
             self.fail("Expected failed constructor")
         except Exception:
             pass
 
         try:
-            PhoneNumberMatch(10, None, PhoneNumber())
+            PhoneNumberMatch(10, None, PhoneNumber())  # type: ignore[arg-type]  # testing type errors
             self.fail("Expected failed constructor")
         except Exception:
             pass
 
         try:
-            PhoneNumberMatch(10, None, None)
+            PhoneNumberMatch(10, None, None)  # type: ignore[arg-type]  # testing type errors
             self.fail("Expected failed constructor")
         except Exception:
             pass
@@ -927,6 +927,7 @@ class PhoneNumberMatcherTest(TestMetadataTestCase):
             match = matcher.next() if matcher.has_next() else None
             self.assertTrue(match is not None,
                             msg="Did not find a number in '" + text + "'; expected '" + number + "'")
+            assert match is not None  # for the type checker
 
             extracted = text[match.start:match.end]
             self.assertEqual(start, match.start,

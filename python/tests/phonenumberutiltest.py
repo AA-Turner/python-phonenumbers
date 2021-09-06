@@ -136,6 +136,11 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
 
     def testGetInstanceLoadUSMetadata(self):
         metadata = PhoneMetadata.metadata_for_region("US")
+        assert metadata is not None  # for the type checker
+        assert metadata.general_desc is not None  # for the type checker
+        assert metadata.fixed_line is not None  # for the type checker
+        assert metadata.toll_free is not None  # for the type checker
+        assert metadata.premium_rate is not None  # for the type checker
         self.assertEqual("US", metadata.id)
         self.assertEqual(1, metadata.country_code)
         self.assertEqual("011", metadata.international_prefix)
@@ -158,6 +163,12 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
 
     def testGetInstanceLoadDEMetadata(self):
         metadata = PhoneMetadata.metadata_for_region("DE")
+        assert metadata is not None  # for the type checker
+        assert metadata.general_desc is not None  # for the type checker
+        assert metadata.fixed_line is not None  # for the type checker
+        assert metadata.mobile is not None  # for the type checker
+        assert metadata.toll_free is not None  # for the type checker
+        assert metadata.premium_rate is not None  # for the type checker
         self.assertEqual("DE", metadata.id)
         self.assertEqual(49, metadata.country_code)
         self.assertEqual("00", metadata.international_prefix)
@@ -182,6 +193,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
 
     def testGetInstanceLoadARMetadata(self):
         metadata = PhoneMetadata.metadata_for_region("AR")
+        assert metadata is not None  # for the type checker
         self.assertEqual("AR", metadata.id)
         self.assertEqual(54, metadata.country_code)
         self.assertEqual("00", metadata.international_prefix)
@@ -197,12 +209,15 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
 
     def testGetInstanceLoadInternationalTollFreeMetadata(self):
         metadata = PhoneMetadata.metadata_for_nongeo_region(800)
+        assert metadata is not None  # for the type checker
         self.assertEqual("001", metadata.id)
         self.assertEqual(800, metadata.country_code)
         self.assertEqual("\\1 \\2", metadata.number_format[0].format)
         self.assertEqual("(\\d{4})(\\d{4})", metadata.number_format[0].pattern)
+        assert metadata.general_desc is not None  # for the type checker
         self.assertEqual(0, len(metadata.general_desc.possible_length_local_only))
         self.assertEqual(1, len(metadata.general_desc.possible_length))
+        assert metadata.toll_free is not None  # for the type checker
         self.assertEqual("12345678", metadata.toll_free.example_number)
 
     def testIsNumberGeographical(self):
@@ -345,6 +360,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         self.assertTrue(phonenumbers.invalid_example_number("001") is None)
         self.assertTrue(phonenumbers.invalid_example_number("CS") is None)
         usInvalidNumber = phonenumbers.invalid_example_number("US")
+        assert usInvalidNumber is not None  # for the type checker
         self.assertEqual(1, usInvalidNumber.country_code)
         self.assertFalse(usInvalidNumber.national_number == 0)
 
@@ -1260,7 +1276,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
     def testGetCountryCodeForRegion(self):
         self.assertEqual(1, phonenumbers.country_code_for_region("US"))
         self.assertEqual(64, phonenumbers.country_code_for_region("NZ"))
-        self.assertEqual(0, phonenumbers.country_code_for_region(None))
+        self.assertEqual(0, phonenumbers.country_code_for_region(None))  # type: ignore[arg-type]  # testing type edge cases
         self.assertEqual(0, phonenumbers.country_code_for_region("ZZ"))
         self.assertEqual(0, phonenumbers.country_code_for_region("001"))
         # CS is already deprecated so the library doesn't support it.
@@ -1278,7 +1294,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         self.assertEqual("0~0", phonenumbers.ndd_prefix_for_region("AO", False))
         self.assertEqual("00", phonenumbers.ndd_prefix_for_region("AO", True))
         # Test cases with invalid regions.
-        self.assertEqual(None, phonenumbers.ndd_prefix_for_region(None, False))
+        self.assertEqual(None, phonenumbers.ndd_prefix_for_region(None, False))  # type: ignore[arg-type]  # testing type edge cases
         self.assertEqual(None, phonenumbers.ndd_prefix_for_region("ZZ", False))
         self.assertEqual(None, phonenumbers.ndd_prefix_for_region("001", False))
         # CS is already deprecated so the library doesn't support it.
@@ -1293,7 +1309,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         self.assertFalse(phonenumbers.is_nanpa_country("DE"))
         self.assertFalse(phonenumbers.is_nanpa_country("ZZ"))
         self.assertFalse(phonenumbers.is_nanpa_country("001"))
-        self.assertFalse(phonenumbers.is_nanpa_country(None))
+        self.assertFalse(phonenumbers.is_nanpa_country(None))  # type: ignore[arg-type]  # testing type edge cases
 
     def testIsPossibleNumber(self):
         self.assertTrue(phonenumbers.is_possible_number(US_NUMBER))
@@ -1814,6 +1830,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
     def testMaybeExtractCountryCode(self):
         number = PhoneNumber()
         metadata = PhoneMetadata.metadata_for_region("US")
+        assert metadata is not None  # for the type checker
         # Note that for the US, the IDD is 011.
         try:
             phoneNumber = "011112-3456789"
@@ -1881,6 +1898,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2033,6 +2051,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(e.error_type,
                              NumberParseException.TOO_LONG,
                              msg="Wrong error type stored in exception.")
@@ -2044,6 +2063,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(e.error_type,
                              NumberParseException.TOO_LONG,
                              msg="Wrong error type stored in exception.")
@@ -2162,6 +2182,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2172,6 +2193,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2182,6 +2204,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2192,6 +2215,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2203,6 +2227,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_LONG,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2214,6 +2239,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2225,6 +2251,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2236,6 +2263,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2247,6 +2275,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_SHORT_NSN,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2258,6 +2287,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2269,6 +2299,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception. 00 is a correct IDD, but 210 is not a valid country code.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2280,6 +2311,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2291,6 +2323,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2302,6 +2335,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2313,6 +2347,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_SHORT_AFTER_IDD,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2324,6 +2359,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_SHORT_AFTER_IDD,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2335,6 +2371,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_SHORT_AFTER_IDD,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2346,6 +2383,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_SHORT_AFTER_IDD,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2358,6 +2396,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2365,11 +2404,12 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         try:
             nullNumber = None
             # Invalid region.
-            phonenumbers.parse(nullNumber, "ZZ")
+            phonenumbers.parse(nullNumber, "ZZ")  # type: ignore[arg-type]  # testing type errors
             self.fail("Null string - should fail.")
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2378,11 +2418,12 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
 
         try:
             nullNumber = None
-            phonenumbers.parse(nullNumber, "US")
+            phonenumbers.parse(nullNumber, "US")  # type: ignore[arg-type]  # testing type errors
             self.fail("Null string - should fail.")
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2396,6 +2437,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2409,6 +2451,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2421,6 +2464,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2562,6 +2606,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2584,6 +2629,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_LONG,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2604,6 +2650,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2626,6 +2673,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.TOO_LONG,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2645,6 +2693,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.NOT_A_NUMBER,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2680,6 +2729,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except NumberParseException:
             # Expected this exception.
             e = sys.exc_info()[1]
+            assert isinstance(e, NumberParseException)  # for the type checker
             self.assertEqual(NumberParseException.INVALID_COUNTRY_CODE,
                              e.error_type,
                              msg="Wrong error type stored in exception.")
@@ -2781,7 +2831,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
                          phonenumbers.is_number_match("+9991235467", nzNumber))
         self.assertEqual(phonenumbers.MatchType.NOT_A_NUMBER,
                          phonenumbers.is_number_match("asdfasdf", nzNumber))
-        self.assertFalse(phonenumberutil._is_number_matching_desc(1234, None))
+        self.assertFalse(phonenumberutil._is_number_matching_desc(1234, None))  # type: ignore[arg-type]  # testing type edge cases
 
     def testIsNumberMatchShortMatchIfDiffNumLeadingZeros(self):
         nzNumberOne = PhoneNumber(country_code=64, national_number=33316005, italian_leading_zero=True)
@@ -2824,15 +2874,13 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         # Check raw_input, country_code_source and preferred_domestic_carrier_code are ignored.
         brNumberOne = PhoneNumber(country_code=55, national_number=3121286979,
                                   country_code_source=CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN,
-                                  preferred_domestic_carrier_code=12, raw_input="012 3121286979")
+                                  preferred_domestic_carrier_code=12, raw_input="012 3121286979")  # type: ignore[arg-type]  # testing type edge cases
         brNumberTwo = PhoneNumber(country_code=55, national_number=3121286979,
                                   country_code_source=CountryCodeSource.FROM_DEFAULT_COUNTRY,
-                                  preferred_domestic_carrier_code=14, raw_input="143121286979")
+                                  preferred_domestic_carrier_code=14, raw_input="143121286979")  # type: ignore[arg-type]  # testing type edge cases
         self.assertEqual(phonenumbers.MatchType.EXACT_MATCH,
                          phonenumbers.is_number_match(brNumberOne, brNumberTwo))
 
-    def testIsNumberMatchIgnoresSomeFields(self):
-        # Check raw_input, country_code_source and preferred_domestic_carrier_code are ignored.
         brNumberOne = PhoneNumber(country_code=55, national_number=3121286979,
                                   country_code_source=CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN,
                                   preferred_domestic_carrier_code="12", raw_input="012 3121286979")
@@ -3084,7 +3132,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         except TypeError:
             pass
         try:
-            metadata.id = None
+            metadata.id = None  # type: ignore[assignment]  # value doesn't matter here, testing mutability
             self.fail("Expected exception on __setattr__")
         except TypeError:
             pass
@@ -3097,6 +3145,8 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
     def testMetadataAsString(self):
         # Python version extra tests for string conversions
         metadata = PhoneMetadata.metadata_for_region("AU")
+        assert metadata is not None  # for the type checker
+        assert metadata.number_format[0].pattern is not None  # for the type checker
         self.assertEqual('\\' + 'd',
                          metadata.number_format[0].pattern[1:3])
         self.assertEqual(r"""NumberFormat(pattern='(\\d{4})(\\d{3})(\\d{3})', format='\\1 \\2 \\3', leading_digits_pattern=['1'], national_prefix_formatting_rule='\\1')""",
@@ -3152,6 +3202,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
     def testMetadataEval(self):
         # Python version extra tests for string conversions
         metadata = PhoneMetadata.metadata_for_region("AU")
+        assert metadata is not None  # for the type checker
         new_number_format = eval(repr(metadata.number_format[0]))
         self.assertEqual(new_number_format, metadata.number_format[0])
         new_general_desc = eval(repr(metadata.general_desc))
@@ -3243,6 +3294,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
         self.assertEqual((0, "abcdef"),
                          phonenumberutil._extract_country_code("abcdef"))
         metadata = PhoneMetadata.metadata_for_region("AU")
+        assert metadata is not None  # for the type checker
         number = PhoneNumber()
         self.assertEqual((0, u("")),
                          phonenumberutil._maybe_extract_country_code("",
@@ -3267,6 +3319,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
 
         # Temporarily insert invalid example number
         metadata800 = PhoneMetadata.metadata_for_nongeo_region(800)
+        assert metadata800 is not None  # for the type checker
         saved_mobile = metadata800.mobile
         metadata800._mutable = True
         metadata800.mobile = PhoneNumberDesc(example_number='')
@@ -3278,6 +3331,7 @@ class PhoneNumberUtilTest(TestMetadataTestCase):
 
         # Temporarily change formatting rule
         metadataGB = PhoneMetadata.metadata_for_region("GB")
+        assert metadataGB is not None  # for the type checker
         saved_rule = metadataGB.number_format[0].national_prefix_formatting_rule
         metadataGB.number_format[0]._mutable = True
         metadataGB.number_format[0].national_prefix_formatting_rule = u('(\\1)')
